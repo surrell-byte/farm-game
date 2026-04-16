@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Farm World ESL | Premium Animal Learning</title>
+  <title>Farm World ESL | Animal Sounds from GitHub</title>
   <style>
     * {
       margin: 0;
@@ -229,7 +229,7 @@
       0% { transform: translateX(0); }
       25% { transform: translateX(-6px); }
       50% { transform: translateX(6px); }
-      75% { transform: translateX(-3px); }
+      75% { transform: translateX(-4px); }
       100% { transform: translateX(0); }
     }
 
@@ -306,21 +306,24 @@
 </div>
 
 <script>
-  // ======================== RELIABLE SOUNDS (ALL WORKING) ========================
+  // ======================== GITHUB MP3 CONFIGURATION ========================
+  // 🔧 EDIT: baseURL updated to your GitHub repository
+  const baseURL = "https://raw.githubusercontent.com/surrell-byte/farm-game/main/animal_sounds/";
+
   const animalPool = [
-    { name: "Cow", emoji: "🐄", sound: "https://www.soundjay.com/animal/cow-moo-1.mp3" },
-    { name: "Sheep", emoji: "🐑", sound: "https://www.soundjay.com/animal/sheep-bleat.mp3" },
-    { name: "Duck", emoji: "🦆", sound: "https://www.soundjay.com/animal/duck-quack-1.mp3" },
-    { name: "Goat", emoji: "🐐", sound: "https://www.soundjay.com/animal/goat-sound-effect.mp3" },
-    { name: "Pig", emoji: "🐖", sound: "https://www.soundjay.com/animal/pig-sound-effect.mp3" },
-    { name: "Chicken", emoji: "🐓", sound: "https://www.soundjay.com/animal/chicken-cluck-1.mp3" },
-    { name: "Turkey", emoji: "🦃", sound: "https://www.soundjay.com/animal/turkey-sound-effect.mp3" },
-    { name: "Donkey", emoji: "🫏", sound: "https://www.soundjay.com/animal/donkey-sound-effect.mp3" },
-    { name: "Horse", emoji: "🐎", sound: "https://www.soundjay.com/animal/horse-sound-effect.mp3" },
-    { name: "Dog", emoji: "🐕", sound: "https://www.soundjay.com/animal/dog-bark-1.mp3" }
+    { name: "Cow", emoji: "🐄", sound: "cow.mp3" },
+    { name: "Sheep", emoji: "🐑", sound: "sheep.mp3" },
+    { name: "Duck", emoji: "🦆", sound: "duck.mp3" },
+    { name: "Goat", emoji: "🐐", sound: "goat.mp3" },
+    { name: "Pig", emoji: "🐖", sound: "pig.mp3" },
+    { name: "Chicken", emoji: "🐓", sound: "chicken.mp3" },
+    { name: "Turkey", emoji: "🦃", sound: "turkey.mp3" },
+    { name: "Donkey", emoji: "🫏", sound: "donkey.mp3" },
+    { name: "Horse", emoji: "🐎", sound: "horse.mp3" },
+    { name: "Dog", emoji: "🐕", sound: "dog.mp3" }
   ];
 
-  // Levels
+  // Levels (using animal names from animalPool)
   const levels = [
     { unlocked: true, name: "🐣 Barn Buddies", animals: ["Cow", "Sheep", "Duck", "Dog"] },
     { unlocked: false, name: "🐷 Pigpen Pals", animals: ["Pig", "Chicken", "Goat", "Donkey"] },
@@ -413,8 +416,6 @@
     let rawQuestions = animalPool.filter(animal => levelData.animals.includes(animal.name));
     currentQuestions = shuffleArray([...rawQuestions]);
     
-    // 🚫 DELETED preload section – no more audioPreloaded
-    
     currentQuestionIndex = 0;
     currentScore = 0;
     answered = false;
@@ -475,7 +476,7 @@
     updateGameStatsUI();
   }
 
-  // 🔥 FIXED: Create audio only on click – most reliable method
+  // 🎵 Plays sound using GitHub raw URL
   function playSoundForCurrent() {
     if (!gameActive || currentQuestionIndex >= currentQuestions.length) {
       messageArea.innerHTML = "🎮 Select a level first!";
@@ -485,17 +486,19 @@
     const q = currentQuestions[currentQuestionIndex];
     stopCurrentAudio();
 
-    // Create fresh Audio element on every click
-    currentAudio = new Audio(q.sound);
+    const fullURL = baseURL + q.sound;
+
+    currentAudio = new Audio();
+    currentAudio.src = fullURL;
+    currentAudio.load();
 
     currentAudio.play()
       .then(() => {
-        console.log("Sound playing");
+        console.log("Playing from animal_sounds: " + q.name);
       })
       .catch(err => {
-        console.warn("Playback failed:", err);
-        messageArea.innerHTML = "🔊 Tap again to enable sound";
-        // Reset message after 1.5s
+        console.warn("Playback failed. Check if files are in animal_sounds folder.", err);
+        messageArea.innerHTML = "🔊 Tap again to load sound";
         setTimeout(() => {
           if (gameActive && !answered && currentQuestionIndex < currentQuestions.length) {
             messageArea.innerHTML = "🐣 Which animal is this?";
